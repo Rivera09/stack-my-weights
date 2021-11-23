@@ -43,7 +43,10 @@ const App = (): React.ReactElement => {
   const calculateStack = () => {
     let weight = +totalWeight - +barWeight;
     let neededDisks: [number, number][] = [];
-    for (const weightItem of weightsList) {
+    const sortedList = weightsList.sort((a, b) =>
+      a.weight > b.weight ? -1 : 1,
+    );
+    for (const weightItem of sortedList) {
       const reamainingQty = weightItem.qty;
       let neededQty = 0;
       for (let i = reamainingQty; i > 0; i--) {
@@ -68,7 +71,7 @@ const App = (): React.ReactElement => {
     }
     text =
       weight === 0
-        ? `You need to stack ${text} per side in order to lift ${totalWeight} lbs with a bar of ${barWeight} lbs`
+        ? `You need to stack ${text} in order to lift ${totalWeight} lbs with a bar of ${barWeight} lbs`
         : `You don't have the necesary equipment to lift ${totalWeight} lbs with a ${barWeight} lbs bar, but you can stack ${text} per side to lift ${
             +totalWeight - weight
           } lbs`;
