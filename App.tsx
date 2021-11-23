@@ -13,8 +13,14 @@ import {
 
 import {WeightInfoItem} from './components';
 
-const App = () => {
-  const [weightsList, setWeightsList] = useState([]);
+interface IWeightItem {
+  id: string;
+  qty: number;
+  weight: number;
+}
+
+const App = (): React.ReactElement => {
+  const [weightsList, setWeightsList] = useState<IWeightItem[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [weightValue, setWeighValue] = useState('');
   const [weightQty, setWeightQty] = useState('');
@@ -29,24 +35,24 @@ const App = () => {
 
   const addWeight = () => {
     const id = shortid.generate();
-    const item = {id, qty: weightQty, weight: weightValue};
+    const item = {id, qty: +weightQty, weight: +weightValue};
     setWeightsList(prevList => [...prevList, item]);
     clearInputs();
   };
 
   const calculateStack = () => {
-    let weight = totalWeight - barWeight;
-    let neededDisks = [];
+    let weight = +totalWeight - +barWeight;
+    let neededDisks: [number, number][] = [];
     for (const weightItem of weightsList) {
       const reamainingQty = weightItem.qty;
       let neededQty = 0;
       for (let i = reamainingQty; i > 0; i--) {
-        if (weight - weightItem.weight * 2 < 0) break;
-        weight -= weightItem.weight * 2;
+        if (weight - +weightItem.weight * 2 < 0) break;
+        weight -= +weightItem.weight * 2;
         neededQty++;
       }
       if (neededQty <= 0) continue;
-      neededDisks = [...neededDisks, [weightItem.weight, neededQty]];
+      neededDisks = [...neededDisks, [+weightItem.weight, neededQty]];
       if (weight === 0) break;
     }
     let text = '';
@@ -64,7 +70,7 @@ const App = () => {
       weight === 0
         ? `You need to stack ${text} per side in order to lift ${totalWeight} lbs with a bar of ${barWeight} lbs`
         : `You don't have the necesary equipment to lift ${totalWeight} lbs with a ${barWeight} lbs bar, but you can stack ${text} per side to lift ${
-            totalWeight - weight
+            +totalWeight - weight
           } lbs`;
     setResponseText(text);
   };
